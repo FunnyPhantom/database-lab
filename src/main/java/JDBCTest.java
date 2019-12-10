@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Scanner;
 
+import static common.Statics.showQueryResults;
+
 // build gradle dependency:
 // compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.15'
 
@@ -101,35 +103,6 @@ public class JDBCTest {
         // TODO
     }
 
-    public static void showQueryResults(String query) {
-        try (
-//                Class.forName("com.mysql.jdbc.Driver");
-                Connection connection = DriverManager.getConnection(
-                        URL_CONNECTION)) {
-            try (Statement statement = connection.createStatement();
-                 ResultSet rs = statement.executeQuery(query)) {
-
-                ResultSetMetaData metaData = rs.getMetaData();
-
-                System.out.print("     ");
-                for (int c = 1; c <= metaData.getColumnCount(); c++) {
-                    System.out.printf("%-30s", metaData.getColumnName(c));
-                }
-                System.out.println();
-
-                int i = 1;
-                while (rs.next()) {
-                    System.out.printf("[%2d] ", i++);
-                    for (int c = 1; c <= metaData.getColumnCount(); c++) {
-                        System.out.printf("%-30s", rs.getString(c));
-                    }
-                    System.out.println();
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }
