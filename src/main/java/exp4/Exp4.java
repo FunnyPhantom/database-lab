@@ -1,6 +1,4 @@
-
-
-import common.Statics;
+package exp4;
 
 import java.sql.*;
 import java.util.*;
