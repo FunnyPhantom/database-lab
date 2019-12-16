@@ -1,7 +1,5 @@
 package exp5.join;
 
-import sun.tools.jconsole.Tab;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -32,22 +30,19 @@ public class Main {
             Table joinUsingSql = joinUsingSql(connection);
 
             // q7
-            leftOuterJoinUsingSql(connection);
+            Table leftOuterJoinUsingSql = leftOuterJoinUsingSql(connection);
             // q8
-            rightOuterJoinUsingSql(connection);
+            Table rightOuterJoinUsingSql = rightOuterJoinUsingSql(connection);
 
             //q9
             List<String> onCols =new ArrayList<>();
             onCols.add("did");
-            leftOuterJoinUsingNestedLoop(tblMovie, tblDirector, onCols);
-            rightOuterJoinUsingNestedLoop(tblMovie, tblDirector, onCols);
+            Table leftOuterJoinUsingNestedLoop = leftOuterJoinUsingNestedLoop(tblMovie, tblDirector, onCols);
+            Table rightOuterJoinUsingNestedLoop = rightOuterJoinUsingNestedLoop(tblMovie, tblDirector, onCols);
 
 
-
-
-            joinUsingHashJoin(tblDirector, tblMovie);
-
-
+            //q11
+            Table joinUsingHashJoin = joinUsingHashJoin(tblDirector, tblMovie);
 
 
             // Q1:
@@ -58,9 +53,13 @@ public class Main {
         }
     }
 
-    private static void q1(Connection connection) throws SQLException {
-        connection.createStatement().execute("INSERT INTO movies.director value (20, 'Stanley Kubrick');" +
-                "INSERT INTO movies.movie VALUE (30, 'Amour', 2012, 127, null);");
+    private static void q1(Connection connection) {
+        try {
+            connection.prepareStatement("INSERT INTO movies.director value (20, 'Stanley Kubrick');" +
+                    "INSERT INTO movies.movie VALUE (30, 'Amour', 2012, 127, null);").executeUpdate();
+        } catch (SQLException e) {
+//            e.printStackTrace();
+        }
     }
 
     private static Table rightOuterJoinUsingSql(Connection connection) {
@@ -95,8 +94,13 @@ public class Main {
 
     }
 
-    private static void joinUsingHashJoin(Table tblDirector, Table tblMovie) {
-        // TODO
+    private static Table joinUsingHashJoin(Table tblDirector, Table tblMovie) {
+        Join j = new HashJoin();
+        Table res = j.join(tblDirector, tblMovie);
+        System.out.println("joinUsingHashJoin:");
+        System.out.println(res);
+
+        return res;
     }
 
     private static Table joinUsingNestedLoop(Table tblDirector, Table tblMovie) {
@@ -108,7 +112,7 @@ public class Main {
     }
 
     private static Table joinUsingSql(Connection connection) {
-        Table t = Table.tableFromSQLQuery(connection, "SELECT * from movies.director join movies.movie", "joinUsingSql");
+        Table t = Table.tableFromSQLQuery(connection, "SELECT * from movies.director natural join movies.movie", "joinUsingSql");
         System.out.println("joinUsingSql:");
         System.out.println(t);
         return t;
